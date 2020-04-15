@@ -12,7 +12,11 @@ class UsersController < ApplicationController
 
     def create
         user = User.create(user_params)
-        render json: user, except: [:updated_at], status:201
+        if user.valid?
+            render json: user, except: [:updated_at], status:201
+        else
+            render json: {errors: user.errors.full_messages}
+        end
     end
 
     def update
