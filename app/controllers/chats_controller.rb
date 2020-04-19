@@ -2,7 +2,7 @@ class ChatsController < ApplicationController
     
     def index
         chats = Chat.all
-        render json: chats, except: [:updated_at] 
+        render json: chats
     end
 
     def show
@@ -11,8 +11,15 @@ class ChatsController < ApplicationController
     end
 
     def create
-        chat = Chat.create(chat_params)
-        render json: chat, except: [:updated_at], status:201
+        chat = Chat.new(chat_params)
+        if chat.save
+            serialized_data = ActiveModelSerializers::Adapter::Json.new(
+                ChatSerializer.new(chat)
+            ).serializable_hash
+            ActionCable.server.broadcast 'chats_channel', serialized_data
+            head :ok
+        end
+        # render json: chat, except: [:updated_at], status:201
     end
 
     def update

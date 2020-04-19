@@ -11,8 +11,16 @@ class MessagesController < ApplicationController
     end
 
     def create
-        message = Message.create(message_params)
-        render json: message, except: [:updated_at], status:201
+        message = Message.new(message_params)
+        chat = Chat.find(message_params[:chat_id])
+        if message.save
+            serialized_data = ActiveModelSerializers::Adapter::Json.new(
+                MessageSerializer.new(message)
+            ).serializable_hash
+            MessagesChannel.broadcast_to chat, serialized_data
+            head :ok
+        end
+        # render json: message, except: [:updated_at], status:201
     end
 
     def update
