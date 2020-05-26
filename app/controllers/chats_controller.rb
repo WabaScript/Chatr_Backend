@@ -16,7 +16,7 @@ class ChatsController < ApplicationController
             serialized_data = ActiveModelSerializers::Adapter::Json.new(
                 ChatSerializer.new(chat)
             ).serializable_hash
-            ActionCable.server.broadcast 'chats_channel', serialized_data
+            ActionCable.server.broadcast 'ChatsChannel', serialized_data
             head :ok
         end
         # render json: chat, except: [:updated_at], status:201
