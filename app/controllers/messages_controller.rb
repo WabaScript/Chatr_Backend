@@ -11,8 +11,14 @@ class MessagesController < ApplicationController
     end
 
     def create
-        message = Message.create(message_params)
-        render json: message, except: [:updated_at], status:201
+        message = Message.new(message_params)
+        if message.save
+        serialized_data = ActiveModelSerializers::Adapter::Json.new(
+            MessageSerializer.new(message)
+        ).serializable_hash
+        ActionCable.server.broadcast 'MessagesChannel', serialized_data
+        head :ok
+        end
     end
 
     def update
