@@ -13,11 +13,11 @@ class MessagesController < ApplicationController
     def create
         message = Message.new(message_params)
         if message.save
-        serialized_data = ActiveModelSerializers::Adapter::Json.new(
-            MessageSerializer.new(message)
-        ).serializable_hash
-        ActionCable.server.broadcast 'MessagesChannel', serialized_data
-        head :ok
+          serialized_data = ActiveModelSerializers::Adapter::Json.new(
+              MessageSerializer.new(message)
+          ).serializable_hash
+          ActionCable.server.broadcast 'MessagesChannel', serialized_data
+          head :ok
         end
     end
 
