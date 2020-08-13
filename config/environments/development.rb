@@ -44,7 +44,8 @@ Rails.application.configure do
 
   # actioncable acceptances
   config.action_cable.allowed_request_origins = [
-  'http://localhost:3001',
+  'http://localhost:3000',
+  'http://localhost:3001'
   'https://chatr2020.herokuapp.com/'
   ]
   # Raises error for missing translations.
